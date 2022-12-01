@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Mariokite",
+  "description": "Chrome Extension that alerts you when your build has finished.",
+  "version": "1.0",
+  "action": {
+    "default_popup": "mariokite.html",
+    "default_icon": "mariokite.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "matches": [
+        "https://developer.chrome.com/docs/extensions/*",
+        "https://developer.chrome.com/docs/webstore/*",
+        "https://buildkite.com/*"
+      ]
+    }
+  ]
+}
