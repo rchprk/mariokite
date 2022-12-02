@@ -9,7 +9,16 @@ const buildStatuses = {
   failed: "build-state-failed",
   canceled: "build-state-canceled",
   building: "build-state-building",
+  preBuilt: "pre-built",
 };
+
+const listenButton = document.getElementById("listen-button");
+
+// var sound = (file) => new Audio(chrome.runtime.getURL(`./audio/${file}`));
+// sound.play();
+
+// https://quicksounds.com/library/sounds/mario
+var sound = (file) => new Audio(chrome.runtime.getURL(file));
 
 // base function from https://stackoverflow.com/questions/5525071/how-to-wait-until-an-element-exists
 const waitForElement = (className) => {
@@ -21,7 +30,7 @@ const waitForElement = (className) => {
 
     if (elementCheck()) {
       console.log("resolving: ", element());
-      resolve(element());
+      resolve(buildStatuses.preBuilt);
     } else {
       const observer = new MutationObserver((mutations) => {
         if (elementCheck()) {
@@ -54,17 +63,26 @@ async function retrieveStatus() {
       waitForElement(buildStatuses.canceled),
     ]);
 
-    const classList = Array.from(buildElement.classList);
-
-    buildStatus = classList.find((name) =>
-      Object.values(buildStatuses).includes(name)
-    );
+    if (buildElement === buildStatuses.preBuilt) {
+      buildStatus = buildStatuses.preBuilt;
+    } else {
+      const classList = Array.from(buildElement.classList);
+      buildStatus = classList.find((name) =>
+        Object.values(buildStatuses).includes(name)
+      );
+    }
   } catch (err) {
     alert(err);
   }
 
   switch (buildStatus) {
     case buildStatuses.passed:
+      window
+        .open(
+          "https://quicksounds.com/uploads/tracks/494252996_1728349084_1953913782.mp3",
+          "_blank"
+        )
+        .focus();
       console.log("=======");
       console.log("PASSED");
       console.log("=======");
@@ -72,12 +90,21 @@ async function retrieveStatus() {
 
     case buildStatuses.failed:
     case buildStatuses.canceled:
+      window
+        .open("https://www.youtube.com/watch?v=m9zhgDsd4P4", "_blank")
+        .focus();
       console.log("=======");
       console.log("FAILED");
       console.log("=======");
       break;
 
+    case buildStatuses.preBuilt:
+      break;
+
     default:
+      window
+        .open("https://www.youtube.com/watch?v=Cc_HRIX_MdM", "_blank")
+        .focus();
       console.log("=======");
       console.log("WHAT");
       console.log("=======");
